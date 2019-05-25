@@ -1,0 +1,158 @@
+<html>
+
+<h1 align="center">Calorie Calculator</h1>
+
+<title>Dela Task_0</title>
+
+<script type="text/javascript">
+	function bmic()
+	{
+		document.getElementById('Calorie').style = 'font-color: red;';
+
+		document.getElementById('Calorie').value = 'Invalid Age';
+		a=parseInt(document.getElementById('Age').value); if (isNaN(a)) return;
+
+		document.getElementById('Calorie').value = 'Invalid Weight';
+		b=parseInt(document.getElementById('Weight').value);if (isNaN(b)) return;
+
+		document.getElementById('Calorie').value = 'Invalid Height';
+		c=parseInt(document.getElementById('Height').value);if (isNaN(c)) return;
+		d= ( document.querySelector('input[name=gender]:checked').value == 'true' );
+
+        if(d)
+        {
+        	document.getElementById('Calorie').value = (864-9.72*a+(1.27*(14.2*b+503*c)));
+
+        }
+        else
+        {
+        	document.getElementById('Calorie').value = (387-7.31*a+(1.27*(10.9*b+660.7*c)));
+        }
+        localStorage.setItem('Height',c)
+        localStorage.setItem('Weight',b)
+        localStorage.setItem('Age',a)
+                      
+ 
+	}
+   
+   function restore()
+   {
+       document.getElementById('Age').value=localStorage.getItem('Age');
+       document.getElementById('Height').value=localStorage.getItem('Height');
+       document.getElementById('Weight').value=localStorage.getItem('Weight');       
+   	    //
+   }
+
+   function getTextFieldValue (value)
+    {
+     element = document.getElementById(value);
+     if ( null == element )
+      {
+      	return 0;
+      }
+     else if ( isNaN(parseInt(element.value)))
+     {
+     	return 0;     	
+     }
+     else
+     return parseInt(element.value);
+    }
+
+   function getEntry (name,count,i)
+    {
+
+     tmp = 'Food item : <input class="names" type="text" value="' + name  + '"></input>' +
+            'Food count: <input class="count" type="text" value="' + count + '"></input>' +
+
+            'Carbohydrates: <input id="carbs_'+i+'"   type="text" value="'+getTextFieldValue("carbs_"  +i)+'"></input>' +
+            'Fat:           <input id="fats_'+i+'"    type="text" value="'+getTextFieldValue("fats_"  +i)+'"></input>' +
+            'Protein:       <input id="protein_'+i+'" type="text" value="'+getTextFieldValue("protein_"  +i)+'"></input>' +
+            'Dietary Fibre: <input id="fibres_'+i+'"  type="text" value="'+getTextFieldValue("fibres_"  +i)+'"></input>' +
+
+            '<br>';
+
+   return tmp;
+    }
+
+   function addItem ()
+    {
+
+
+     foodcount = document.getElementsByClassName("count");
+     foodnames = document.getElementsByClassName("names");
+
+     tmp = "";
+     for (var i=0; i<foodcount.length; i++)
+      tmp += getEntry(foodnames[i].value,foodcount[i].value,i);
+
+     tmp += getEntry('','1',foodcount.length);
+     document.getElementById('inputList').innerHTML = tmp;
+
+   function combine (i)
+    {
+
+     carbs   = getTextFieldValue("carbs_"+i);
+     fats    = getTextFieldValue("fats_"+i);
+     protein = getTextFieldValue("protein_"+i);
+     fibres  = getTextFieldValue("fibres_"+i);
+
+     return (carbs*4) + (fats*9) + (protein*4) + (fibres*3);
+    }
+
+   function calculate ()
+    {
+
+     foodcount = document.getElementsByClassName("count");
+
+     val = 0;
+     for (var i=0; i<foodcount.length; i++)
+      {
+
+       	val += ( parseFloat(foodcount[i].value) *combine(i) );
+
+      }
+
+     document.getElementById("daily").value = val;
+
+     required = parseFloat(document.getElementById('Calorie').value);
+     consumed = val;
+
+     if( (required < 0) || (consumed > required) )
+     {
+      document.getElementById('debug').innerHTML = "Please Die";
+     }
+    }
+
+</script>
+
+<body>
+
+	<div align="center">
+
+		<form>
+			Age    <input id="Age"    type="text" name="Age"   ><br>
+			Weight <input id="Weight" type="text" name="Weight"><br>
+			Height <input id="Height" type="text" name="Height"><br>
+
+			Male   <input type="radio" name="gender" value="true" >
+			Female <input type="radio" name="gender" value="false"><br>
+
+			<input type="button" value="Submit" onClick="bmic()"><br>
+			Daily Calorie Limit
+			<input id="Calorie" type="text"></input>
+			<input id="AddItem" type="button" onClick="addItem()" value="Add Food Item"></input>
+
+			<div id="inputList"> </div>
+			<input type="button" value="Calculate Daily Intake" onClick="calculate()"></input>
+			<input id="daily" type="text"></input>
+			<input type="button" value="Restore" onClick="restore()"></input>
+			<div id="debug"> </div>
+			
+
+		</form>
+
+	</div>
+
+</body>
+
+</html>
